@@ -50,17 +50,17 @@
             android:text="Title"
             android:textColor="@color/white"
             android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@id/btn_download"
+            app:layout_constraintEnd_toStartOf="@id/btn_bookmark"
             app:layout_constraintStart_toEndOf="@id/btn_back"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            android:id="@+id/btn_download"
+            android:id="@+id/btn_bookmark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_bookmark"
+            android:src="@drawable/ic_bookmark_border"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="@color/white" />
@@ -160,7 +160,7 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_eps"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

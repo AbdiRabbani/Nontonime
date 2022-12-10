@@ -1,27 +1,19 @@
 package com.example.nontonime.activity
 
-import android.app.Activity
-import android.app.DownloadManager
-import android.app.Instrumentation.ActivityResult
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.nontonime.R
 import com.example.nontonime.adapter.EpsAdapter
 import com.example.nontonime.databinding.ActivityDetailBinding
+import com.example.nontonime.response.DataResponseItem
 import com.example.nontonime.response.DetailResponseItem
 import com.example.nontonime.viewmodel.MainViewModel
 import com.squareup.picasso.Picasso
-import java.io.File
 
 class DetailActivity : AppCompatActivity() {
 
@@ -31,18 +23,21 @@ class DetailActivity : AppCompatActivity() {
     private var _viewModel: MainViewModel? = null
     private val viewModel get() = _viewModel as MainViewModel
 
+    private var _data: DataResponseItem? = null
+    private val data get() = _data as DataResponseItem
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        _data = intent.getParcelableExtra(MOVIE_DATA)
         _binding = ActivityDetailBinding.inflate(layoutInflater)
-        _viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        _viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         setContentView(binding.root)
 
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-        val idMovie = intent.extras?.getString(MOVIE_DATA)
-        Log.i("idddddddd", "${intent.extras?.getString(MOVIE_DATA)}")
-
+        val idMovie = data.animeId
+        val releaseDate = data.releasedDate
 
         viewModel.apply {
             getDataDetail(idMovie)
@@ -56,6 +51,36 @@ class DetailActivity : AppCompatActivity() {
             finish()
         }
 
+        bookmarkBtn()
+
+    }
+
+    private fun bookmarkBtn() {
+        binding.btnBookmark.setOnClickListener {
+            viewModel.isMovieBookmarked(data)
+                .observe(this@DetailActivity) { isBookmarked ->
+                        binding.btnBookmark.apply {
+                            if (isBookmarked) {
+                                setImageResource(R.drawable.ic_bookmark)
+                            } else {
+                                setImageResource(R.drawable.ic_bookmark_border)
+                            }
+
+                            var message: String
+                            setOnClickListener {
+                                message = if (isBookmarked) {
+                                    viewModel.unBookmarkMovie(data)
+                                    context.getString(R.string.txt_bookmark_removed)
+
+                                } else {
+                                    viewModel.bookmarkMovie(data)
+                                    context.getString(R.string.txt_bookmark_added)
+                                }
+                                Toast.makeText(this@DetailActivity, message, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                }
+        }
     }
 
     private fun showData(data: DetailResponseItem) {
@@ -72,7 +97,7 @@ class DetailActivity : AppCompatActivity() {
         Picasso.get().load(data.animeImg).placeholder(R.drawable.loading).into(binding.imgContent)
 
         binding.rvEps.apply {
-            layoutManager = GridLayoutManager(context,2, GridLayoutManager.VERTICAL, false )
+            layoutManager = GridLayoutManager(context,3, GridLayoutManager.VERTICAL, false )
             adapter = EpsAdapter(data.episodesList)
         }
     }

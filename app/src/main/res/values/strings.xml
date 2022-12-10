@@ -2,4 +2,6 @@
     <string name="app_name">Nontonime</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="txt_bookmark_removed">Bookmark has removed</string>
+    <string name="txt_bookmark_added">Bookmark has added</string>
 </resources>

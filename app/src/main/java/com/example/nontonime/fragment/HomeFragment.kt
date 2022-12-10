@@ -9,31 +9,18 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.nontonime.R
+import com.example.nontonime.adapter.GridAdapter
 import com.example.nontonime.adapter.MovieAdapter
 import com.example.nontonime.adapter.PopularAdapter
 import com.example.nontonime.databinding.FragmentHomeBinding
 import com.example.nontonime.response.DataResponseItem
-import com.example.nontonime.viewmodel.AiringViewModel
-import com.example.nontonime.viewmodel.AllViewModel
 import com.example.nontonime.viewmodel.MainViewModel
-import com.example.nontonime.viewmodel.RecentViewModel
 
 class HomeFragment : Fragment() {
 
 
     private var _viewModel: MainViewModel? = null
     private val viewModel get() = _viewModel as MainViewModel
-
-    private var _allViewModel: AllViewModel? = null
-    private val allViewModel get() = _allViewModel as AllViewModel
-
-    private var _recentViewModel: RecentViewModel? = null
-    private val recentViewModel get() = _recentViewModel as RecentViewModel
-
-    private var _airingViewModel: AiringViewModel? = null
-    private val airingViewModel get() = _airingViewModel as AiringViewModel
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding as FragmentHomeBinding
@@ -50,45 +37,42 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _allViewModel = ViewModelProvider(this).get(AllViewModel::class.java)
-        _airingViewModel = ViewModelProvider(this).get(AiringViewModel::class.java)
-        _viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        _recentViewModel = ViewModelProvider(this).get(RecentViewModel::class.java)
-
+        _viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         binding.reloadLayout.setOnRefreshListener {
             showAll()
             binding.reloadLayout.isRefreshing = false
-            Log.i("REFRESH", "refreshed")
         }
 
         showAll()
     }
 
     private fun showAll() {
+
         viewModel.apply {
             getDataPopular()
             dataResponse.observe(viewLifecycleOwner) { showData(it as ArrayList<DataResponseItem>) }
             isError.observe(viewLifecycleOwner) { showError(it) }
         }
 
-        recentViewModel.apply {
-            getDataRecent()
-            dataResponse.observe(viewLifecycleOwner) { showDataRecent(it as ArrayList<DataResponseItem>) }
-            isError.observe(viewLifecycleOwner) { showError(it) }
-        }
-
-        airingViewModel.apply {
-            getDataAiring()
-            dataResponse.observe(viewLifecycleOwner) { showDataAiring(it as ArrayList<DataResponseItem>) }
-            isError.observe(viewLifecycleOwner) { showError(it) }
-        }
-
-        allViewModel.apply {
+        viewModel.apply {
             getDataAll()
-            dataResponse.observe(viewLifecycleOwner) { showDataAll(it as ArrayList<DataResponseItem>) }
+            dataMovieResponse.observe(viewLifecycleOwner) { showDataAll(it as ArrayList<DataResponseItem>) }
             isError.observe(viewLifecycleOwner) { showError(it) }
         }
+
+        viewModel.apply {
+            getDataRecent()
+            dataRecentResponse.observe(viewLifecycleOwner) { showDataRecent(it as ArrayList<DataResponseItem>) }
+            isError.observe(viewLifecycleOwner) { showError(it) }
+        }
+
+        viewModel.apply {
+            getDataAiring()
+            dataAiringResponse.observe(viewLifecycleOwner) { showDataAiring(it as ArrayList<DataResponseItem>) }
+            isError.observe(viewLifecycleOwner) { showError(it) }
+        }
+
     }
 
     private fun showError(error: Throwable?) {
@@ -105,7 +89,7 @@ class HomeFragment : Fragment() {
     private fun showDataAll(data: ArrayList<DataResponseItem>) {
         binding.rvAll.apply {
             layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
-            adapter = MovieAdapter(data)
+            adapter = GridAdapter(data)
         }
     }
 

@@ -7,10 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nontonime.R
 import com.example.nontonime.activity.DetailActivity
 import com.example.nontonime.databinding.ItemMovieBinding
+import com.example.nontonime.entity.BookmarkEntity
 import com.example.nontonime.response.DataResponseItem
 import com.squareup.picasso.Picasso
 
-class MovieAdapter(private val listMovie: ArrayList<DataResponseItem>) :
+class MovieAdapter(private val listMovie: List<DataResponseItem>) :
     RecyclerView.Adapter<MovieAdapter.MyViewHolder>() {
 
     class MyViewHolder(val binding: ItemMovieBinding) : RecyclerView.ViewHolder(binding.root)
@@ -29,16 +30,20 @@ class MovieAdapter(private val listMovie: ArrayList<DataResponseItem>) :
                 titleContent.text = listMovie[position].animeTitle
             }
 
+
+
             Picasso.get().load(listMovie[position].animeImg).placeholder(R.drawable.loading)
                 .into(imgContent)
         }
 
         holder.itemView.setOnClickListener {
             val intent = Intent(it.context, DetailActivity::class.java)
-            intent.putExtra(DetailActivity.MOVIE_DATA, listMovie[position].animeId)
+            intent.putExtra(DetailActivity.MOVIE_DATA, listMovie[position])
             it.context.startActivity(intent)
         }
     }
+
+    fun getMovieAt(position: Int) = listMovie[position]
 
     override fun getItemCount() = listMovie.size
 }

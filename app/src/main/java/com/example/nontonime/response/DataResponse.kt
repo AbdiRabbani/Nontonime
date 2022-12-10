@@ -1,6 +1,10 @@
 package com.example.nontonime.response
 
 import android.os.Parcelable
+import android.provider.ContactsContract.Data
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import com.example.nontonime.entity.BookmarkEntity
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
@@ -8,7 +12,7 @@ import kotlinx.android.parcel.Parcelize
 data class DataResponse(
 
 	@field:SerializedName("DataResponse")
-	val dataResponse: List<DataResponseItem?>? = null
+	val dataResponse: MutableList<DataResponseItem?>? = null
 ) : Parcelable
 
 @Parcelize
@@ -31,4 +35,12 @@ data class DataResponseItem(
 
 	@field:SerializedName("episodeNum")
 	val episodeNum: String? = null
-) : Parcelable
+
+) : Parcelable {
+	fun asBookmarkEntity() = BookmarkEntity(
+		animeid = animeId as String,
+		animeTitle = animeTitle as String,
+		animeImg = animeImg as String,
+		releasedDate = releasedDate
+	)
+}

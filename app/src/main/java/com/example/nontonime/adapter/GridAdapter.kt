@@ -6,17 +6,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nontonime.R
 import com.example.nontonime.activity.DetailActivity
+import com.example.nontonime.databinding.GridItemMovieBinding
 import com.example.nontonime.databinding.ItemPopularBinding
 import com.example.nontonime.response.DataResponseItem
 import com.squareup.picasso.Picasso
 
-class PopularAdapter(private val listMovie: ArrayList<DataResponseItem>) :
-    RecyclerView.Adapter<PopularAdapter.MyViewHolder>() {
+class GridAdapter(private val listMovie: ArrayList<DataResponseItem>) :
+    RecyclerView.Adapter<GridAdapter.MyViewHolder>() {
 
-    class MyViewHolder(val binding: ItemPopularBinding) : RecyclerView.ViewHolder(binding.root)
+    class MyViewHolder(val binding: GridItemMovieBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MyViewHolder(
-        ItemPopularBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        GridItemMovieBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
