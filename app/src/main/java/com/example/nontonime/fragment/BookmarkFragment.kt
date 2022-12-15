@@ -9,9 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.example.nontonime.adapter.GridAdapter
 import com.example.nontonime.adapter.MovieAdapter
 import com.example.nontonime.adapter.PopularAdapter
+import com.example.nontonime.adapter.SwipeToDelete
 import com.example.nontonime.databinding.FragmentBookmarkBinding
 import com.example.nontonime.response.DataResponseItem
 import com.example.nontonime.viewmodel.MainViewModel
@@ -38,21 +40,24 @@ class BookmarkFragment() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.reloadLayout.setOnRefreshListener {
-            showAll()
+            showData()
             binding.reloadLayout.isRefreshing = false
         }
-        showAll()
+        showData()
     }
 
-    private fun showAll() {
-
+    private fun showData() {
         viewModel.apply {
             getAllBookmarkedMovie().observe(viewLifecycleOwner) {data ->
-                data?.let {
-                    Log.d("BookmarkFragment", "showAll: $data")
+                val gridAdapter = GridAdapter()
+
+                data.let {
                     binding.rvBookmark.apply {
-                        adapter =  GridAdapter(data as ArrayList<DataResponseItem>)
+                        gridAdapter.setData(data)
+                        Log.i("ooooo", "showData: $data")
+                        adapter =  gridAdapter
                         layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
+                        ItemTouchHelper(SwipeToDelete(viewModel, gridAdapter, context)).attachToRecyclerView(this)
                     }
                 }
             }

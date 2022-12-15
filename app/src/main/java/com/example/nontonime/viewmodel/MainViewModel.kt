@@ -3,6 +3,7 @@ package com.example.nontonime.viewmodel
 import android.app.Application
 import android.provider.ContactsContract.Data
 import androidx.lifecycle.*
+import com.example.nontonime.entity.BookmarkEntity
 import com.example.nontonime.network.ApiClient
 import com.example.nontonime.response.DataResponseItem
 import com.example.nontonime.response.DetailResponseItem

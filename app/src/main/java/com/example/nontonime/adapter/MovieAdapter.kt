@@ -43,7 +43,5 @@ class MovieAdapter(private val listMovie: List<DataResponseItem>) :
         }
     }
 
-    fun getMovieAt(position: Int) = listMovie[position]
-
     override fun getItemCount() = listMovie.size
 }

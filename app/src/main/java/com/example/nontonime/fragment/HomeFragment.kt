@@ -9,9 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.nontonime.adapter.GridAdapter
 import com.example.nontonime.adapter.MovieAdapter
 import com.example.nontonime.adapter.PopularAdapter
+import com.example.nontonime.adapter.SwipeToDelete
 import com.example.nontonime.databinding.FragmentHomeBinding
 import com.example.nontonime.response.DataResponseItem
 import com.example.nontonime.viewmodel.MainViewModel
@@ -46,6 +48,9 @@ class HomeFragment : Fragment() {
 
         showAll()
     }
+
+
+
 
     private fun showAll() {
 
@@ -89,7 +94,7 @@ class HomeFragment : Fragment() {
     private fun showDataAll(data: ArrayList<DataResponseItem>) {
         binding.rvAll.apply {
             layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
-            adapter = GridAdapter(data)
+            adapter = GridAdapter().apply { setData(data) }
         }
     }
 

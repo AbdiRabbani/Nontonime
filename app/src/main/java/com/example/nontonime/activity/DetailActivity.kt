@@ -34,10 +34,12 @@ class DetailActivity : AppCompatActivity() {
         _viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         setContentView(binding.root)
 
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
 
         val idMovie = data.animeId
-        val releaseDate = data.releasedDate
 
         viewModel.apply {
             getDataDetail(idMovie)
@@ -56,30 +58,27 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun bookmarkBtn() {
-        binding.btnBookmark.setOnClickListener {
-            viewModel.isMovieBookmarked(data)
-                .observe(this@DetailActivity) { isBookmarked ->
-                        binding.btnBookmark.apply {
-                            if (isBookmarked) {
-                                setImageResource(R.drawable.ic_bookmark)
-                            } else {
-                                setImageResource(R.drawable.ic_bookmark_border)
-                            }
-
-                            var message: String
-                            setOnClickListener {
-                                message = if (isBookmarked) {
-                                    viewModel.unBookmarkMovie(data)
-                                    context.getString(R.string.txt_bookmark_removed)
-
-                                } else {
-                                    viewModel.bookmarkMovie(data)
-                                    context.getString(R.string.txt_bookmark_added)
-                                }
-                                Toast.makeText(this@DetailActivity, message, Toast.LENGTH_SHORT).show()
-                            }
-                        }
+        viewModel.isMovieBookmarked(data).observe(this@DetailActivity) { isBookmarked ->
+            binding.btnBookmark.apply {
+                if (isBookmarked) {
+                    setImageResource(R.drawable.ic_bookmark)
+                } else {
+                    setImageResource(R.drawable.ic_bookmark_border)
                 }
+
+                var message: String
+                setOnClickListener {
+                    message = if (isBookmarked) {
+                        viewModel.unBookmarkMovie(data)
+                        context.getString(R.string.txt_bookmark_removed)
+
+                    } else {
+                        viewModel.bookmarkMovie(data)
+                        context.getString(R.string.txt_bookmark_added)
+                    }
+                    Toast.makeText(this@DetailActivity, message, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -90,14 +89,14 @@ class DetailActivity : AppCompatActivity() {
             tvRelease.text = data.releasedDate
             tvSynopsis.text = data.synopsis
             tvStatus.text = data.status
-            tvGenres.text = data.genres.toString().replace("[","").replace("]", "")
+            tvGenres.text = data.genres.toString().replace("[", "").replace("]", "")
         }
 
         Picasso.get().load(data.animeImg).placeholder(R.drawable.loading).into(binding.imgHeader)
         Picasso.get().load(data.animeImg).placeholder(R.drawable.loading).into(binding.imgContent)
 
         binding.rvEps.apply {
-            layoutManager = GridLayoutManager(context,3, GridLayoutManager.VERTICAL, false )
+            layoutManager = GridLayoutManager(context, 3, GridLayoutManager.VERTICAL, false)
             adapter = EpsAdapter(data.episodesList)
         }
     }
